@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
-import * as textHelpers from "../utils/textHelpers";
 import _ from "lodash";
+import { Row,Col } from "reactstrap";
+import * as textHelpers from "../utils/textHelpers";
 import InputWithOptions from "../atoms/input-with-options/index";
+import DictIcon from "../res/img/Dictionary-icon.png";
+
 const cors_workaround_url = "https://cors-anywhere.herokuapp.com/";
 const searchDebounceTimeInMs = 300;
 
@@ -85,35 +88,41 @@ export default class HomePage extends Component {
 
   render() {
     return (
-      <div>
-        <div className="form-inline">
-          <div className="input-group input-group-sm ml-6">
-            <div className="input-group-prepend">
-              <span className="input-group-text">Search:</span>
-            </div>
-            <InputWithOptions
-              handleOnFocus={this.onSearchFocus}
-              handleOnChange={this.onSearch}
-              term={this.state.search}
-			  suggestionCount={5}
-			  placeholder={"type your phrase here.."}
-              options={
-                !!this.state.searchResults
-                  ? [
-                      ...new Set(
-                        this.state.searchResults.map(searchResult => {
-                          return {
-                            text: searchResult.text,
-                            key: searchResult.key
-                          };
-                        })
-                      )
-                    ]
-                  : []
-              }
-            />
-          </div>
-        </div>
+      <div className="container-fluid">
+	    <Row>
+          <Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 1, offset: 5 }} >
+            <img src={DictIcon} alt="App-Icon" height="200px" />
+          </Col>
+		  <Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 1, offset: 1 }}>
+			  <h1 style={{lineHeight:"4em"}}>DictR</h1>
+		  </Col>
+        </Row>
+        <Row form={true}>
+		<Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 6, offset: 3 }} >
+          <InputWithOptions
+            handleOnFocus={this.onSearchFocus}
+            handleOnChange={this.onSearch}
+            term={this.state.search}
+            suggestionCount={5}
+            placeholder={"type your phrase here.."}
+            className={"form-control-lg"}
+            options={
+              !!this.state.searchResults
+                ? [
+                    ...new Set(
+                      this.state.searchResults.map(searchResult => {
+                        return {
+                          text: searchResult.text,
+                          key: searchResult.key
+                        };
+                      })
+                    )
+                  ]
+                : []
+            }
+          />
+		  </Col>
+        </Row>
         <div
           dangerouslySetInnerHTML={{ __html: this.state.translationContent }}
         />
