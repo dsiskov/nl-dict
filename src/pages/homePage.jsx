@@ -27,7 +27,8 @@ export default class HomePage extends Component {
   }
 
   componentDidMount() {
-    // nothing special
+	// nothing special
+	textHelpers.parseInnerHTML();
   }
 
   async getSearchResults(inputString) {
