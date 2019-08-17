@@ -13,7 +13,7 @@ const InputWithOptions = props => (
     />
     <datalist id="suggested_words_list">
       {props.options.slice(0, props.suggestionCount).map(o => (
-        <option value={o} />
+        <option value={o.text} key={o.key} />
       ))}
     </datalist>
   </div>
