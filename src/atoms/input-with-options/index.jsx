@@ -3,7 +3,7 @@ import { Input } from "reactstrap";
 import PropTypes from 'prop-types';
 
 const InputWithOptions = props => (
-  <div>
+  <div className="input-group">
     <Input
       type="text"
       list="suggested_words_list"
@@ -11,6 +11,7 @@ const InputWithOptions = props => (
       onChange={props.handleOnChange}
       value={props.term}
       placeholder={props.placeholder}
+      className={props.className}
     />
     <datalist id="suggested_words_list">
       {props.options.slice(0, props.suggestionCount).map(o => (
@@ -26,7 +27,8 @@ InputWithOptions.propTypes = {
     options: PropTypes.array,
     suggestionCount: PropTypes.number,
     term: PropTypes.string,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    className: PropTypes.string
   };
 
   InputWithOptions.defaultProps = {
