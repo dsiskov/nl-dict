@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
 import * as textHelpers from "../utils/textHelpers";
-import { Input } from "reactstrap";
 import _ from "lodash";
 import InputWithOptions from "../atoms/input-with-options/index";
 const cors_workaround_url = "https://cors-anywhere.herokuapp.com/";
-const searchDebounceTimeInMs = 500;
+const searchDebounceTimeInMs = 300;
 
 export default class HomePage extends Component {
   constructor(props) {
@@ -63,10 +62,8 @@ export default class HomePage extends Component {
       }
     };
     let response = await axios.get(cors_workaround_url + url, params);
-    console.log(response.data);
     let parsed = textHelpers.hex_to_ascii(response.data);
 
-    console.log(parsed);
     this.setState({ translationContent: parsed });
   }
 
@@ -97,15 +94,18 @@ export default class HomePage extends Component {
             <InputWithOptions
               handleOnFocus={this.onSearchFocus}
               handleOnChange={this.onSearch}
-			  term={this.state.search}
-			  suggestionCount={5}
+              term={this.state.search}
+              suggestionCount={5}
               options={
                 !!this.state.searchResults
                   ? [
                       ...new Set(
-                        this.state.searchResults.map(
-                          searchResult => searchResult.text
-                        )
+                        this.state.searchResults.map(searchResult => {
+                          return {
+                            text: searchResult.text,
+                            key: searchResult.key
+                          };
+                        })
                       )
                     ]
                   : []
