@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
 import _ from "lodash";
-import { Row,Col } from "reactstrap";
+import {
+  Row,
+  Col,
+  Card,
+  CardText,
+  CardBody,
+  CardTitle,
+  CardSubtitle
+} from "reactstrap";
 import * as textHelpers from "../utils/textHelpers";
 import InputWithOptions from "../atoms/input-with-options/index";
 import DictIcon from "../res/img/Dictionary-icon.png";
@@ -27,8 +35,8 @@ export default class HomePage extends Component {
   }
 
   componentDidMount() {
-	// nothing special
-	textHelpers.parseInnerHTML();
+    // nothing special
+    textHelpers.parseInnerHTML();
   }
 
   async getSearchResults(inputString) {
@@ -90,43 +98,69 @@ export default class HomePage extends Component {
   render() {
     return (
       <div className="container-fluid">
-	    <Row>
-          <Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 1, offset: 5 }} >
+        <Row>
+          <Col
+            xs={{ size: 1, offset: 1 }}
+            sm={{ size: 1, offset: 1 }}
+            lg={{ size: 1, offset: 5 }}
+          >
             <img src={DictIcon} alt="App-Icon" height="200px" />
           </Col>
-		  <Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 1, offset: 1 }}>
-			  <h1 style={{lineHeight:"4em"}}>DictR</h1>
-		  </Col>
+          <Col
+            xs={{ size: 1, offset: 1 }}
+            sm={{ size: 1, offset: 1 }}
+            lg={{ size: 1, offset: 1 }}
+          >
+            <h1 style={{ lineHeight: "4em" }}>DictR</h1>
+          </Col>
         </Row>
         <Row form={true}>
-		<Col xs={{ size: 1, offset: 1 }} sm={{ size: 1, offset: 1 }} lg={{ size: 6, offset: 3 }} >
-          <InputWithOptions
-            handleOnFocus={this.onSearchFocus}
-            handleOnChange={this.onSearch}
-            term={this.state.search}
-            suggestionCount={5}
-            placeholder={"type your phrase here.."}
-            className={"form-control-lg"}
-            options={
-              !!this.state.searchResults
-                ? [
-                    ...new Set(
-                      this.state.searchResults.map(searchResult => {
-                        return {
-                          text: searchResult.text,
-                          key: searchResult.key
-                        };
-                      })
-                    )
-                  ]
-                : []
-            }
-          />
-		  </Col>
+          <Col
+            xs={{ size: 1, offset: 1 }}
+            sm={{ size: 1, offset: 1 }}
+            lg={{ size: 6, offset: 3 }}
+          >
+            <InputWithOptions
+              handleOnFocus={this.onSearchFocus}
+              handleOnChange={this.onSearch}
+              term={this.state.search}
+              suggestionCount={5}
+              placeholder={"type your phrase here.."}
+              className={"form-control-lg"}
+              options={
+                !!this.state.searchResults
+                  ? [
+                      ...new Set(
+                        this.state.searchResults.map(searchResult => {
+                          return {
+                            text: searchResult.text,
+                            key: searchResult.key
+                          };
+                        })
+                      )
+                    ]
+                  : []
+              }
+            />
+          </Col>
         </Row>
-        <div
-          dangerouslySetInnerHTML={{ __html: this.state.translationContent }}
-        />
+        <Row>
+          <Col
+            xs={{ size: 1, offset: 1 }}
+            sm={{ size: 1, offset: 1 }}
+            lg={{ size: 6, offset: 3 }}
+          >
+            <Card style={{ marginTop: "50px" }}>
+              <CardBody>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.state.translationContent
+                  }}
+                />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
