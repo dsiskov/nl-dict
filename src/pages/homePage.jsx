@@ -87,7 +87,7 @@ export default class HomePage extends Component {
     return (
       <div>
         <div className="form-inline">
-          <div className="input-group input-group-sm ml-2">
+          <div className="input-group input-group-sm ml-6">
             <div className="input-group-prepend">
               <span className="input-group-text">Search:</span>
             </div>
@@ -95,7 +95,8 @@ export default class HomePage extends Component {
               handleOnFocus={this.onSearchFocus}
               handleOnChange={this.onSearch}
               term={this.state.search}
-              suggestionCount={5}
+			  suggestionCount={5}
+			  placeholder={"type your phrase here.."}
               options={
                 !!this.state.searchResults
                   ? [

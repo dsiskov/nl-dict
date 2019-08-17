@@ -10,6 +10,7 @@ const InputWithOptions = props => (
       onFocus={props.handleOnFocus}
       onChange={props.handleOnChange}
       value={props.term}
+      placeholder={props.placeholder}
     />
     <datalist id="suggested_words_list">
       {props.options.slice(0, props.suggestionCount).map(o => (
@@ -24,7 +25,8 @@ InputWithOptions.propTypes = {
     handleOnChange: PropTypes.func.isRequired,
     options: PropTypes.array,
     suggestionCount: PropTypes.number,
-    term: PropTypes.string
+    term: PropTypes.string,
+    placeholder: PropTypes.string
   };
 
   InputWithOptions.defaultProps = {
