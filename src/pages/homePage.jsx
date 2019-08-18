@@ -36,7 +36,6 @@ export default class HomePage extends Component {
 
   componentDidMount() {
     // nothing special
-    textHelpers.parseInnerHTML();
   }
 
   async getSearchResults(inputString) {
@@ -61,7 +60,7 @@ export default class HomePage extends Component {
     }));
     if (!!data[0]) {
       await this.getTranslationForSearchResult(data[0].key);
-    }
+	}
     this.setState({ searchResults: data });
   }
 
@@ -75,7 +74,7 @@ export default class HomePage extends Component {
     };
     let response = await axios.get(cors_workaround_url + url, params);
     let parsed = textHelpers.hex_to_ascii(response.data);
-
+	console.log(textHelpers.parseInnerHTML(parsed));
     this.setState({ translationContent: parsed });
   }
 

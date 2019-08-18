@@ -16,40 +16,70 @@ export function ascii_to_hex(inputString) {
   return arr1.join("");
 }
 
-export function parseInnerHTML() {
+function CreateWordMeaning(meaning, example, useCases, synonym) {
+  return {
+    meaning,
+    example,
+    useCases,
+    synonym
+  };
+}
+
+export function parseInnerHTML(str) {
   const term_regex = /<H1>(.*)<\/H1>/m;
   const term_func_regex = /<i>(.*)<\/i>/m;
-  const str = `"<H1>saai </H1>
-<i>bijvoeglijk naamwoord</i>
+  const definers_regex = /<DD>((.|\n)*)<BR>((.|\n)*)<\/DL>/gmui;
+  const synonym_regex = />([a-zA-Z]+)<\/A>/gm;
 
-<OL>
-<LI><STRONG>gewoon, niet bijzonder</STRONG><BR>
-vb: haar uitstraling is een beetje saai<BR>
-<OL>
-<LI>een saaie piet
- <i>[een saai persoon]</i><BR>
-</OL>
-synoniemen: <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_D/W538.HTM');">dagelijks</A> <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_K/W9457.HTM');">kleurloos</A><BR>
-<LI><STRONG>zonder afwisseling</STRONG><BR>
-vb: er gebeurt weinig in dit verhaal, het is erg saai<BR>
-synoniemen: <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_E/W690.HTM');">eentonig</A> <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_D/W4919.HTM');">duf</A> <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_D/W8644.HTM');">doods</A> <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_D/W8664.HTM');">dor</A> <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_M/W9967.HTM');">monotoon</A><BR>
-</OL>
-
-
-<STRONG>Meer informatie bij:</STRONG><BR>
-<A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_A/W6238.HTM');">afwisseling</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_B/W218.HTM');">beetje</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_B/W354.HTM');">bijzonder</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_D/W609.HTM');">dit</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_E/W3422.HTM');">er</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_H/W3508.HTM');">het</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_I/W1119.HTM');">in</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_P/W1965.HTM');">persoon</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_U/W10670.HTM');">uitstraling</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_V/W2722.HTM');">verhaal</A>  <A href="javascript:void(0);" onclick="javascript:getWordByPad('LTR_Z/W3131.HTM');">zonder</A>
-<DL>
-<DT><STRONG>Bijvoeglijk naamwoord</STRONG>: saai
-<DD>... is saaier dan ...<BR>
-het saaist<BR>
-de/het saaie ...<BR>
-iets saais<BR>
-</DL>
-<A id='copyright' HREF="//www.numo.nl">Numo Woordenboek &copy; 2018</A>
-"`;
   let term = getFirstMatch(str, term_regex);
-  let term_func = getFirstMatch(str, term_func_regex);
+  let term_syntactic_role = getFirstMatch(str, term_func_regex);
+  let definers_match = getFirstMatch(str, definers_regex);
+  let definers = definers_match? definers_match.split("<BR>\n") : [];
+  let meaning_paragraph = str.split("\n\n")[1];
+  let meaning_paragraph_per_line =meaning_paragraph? meaning_paragraph.split("\n").slice(1, -1) : [];
+  let meanings = [];
+  for (let index = 0; index < meaning_paragraph_per_line.length; index++) {
+    const line = meaning_paragraph_per_line[index];
+    if (line.startsWith("<LI><STRONG>")) {
+      const definition = line
+        .split("<LI><STRONG>")[1]
+        .split("</STRONG><BR>")[0];
+      const example = meaning_paragraph_per_line[index + 1]
+        .split("vb: ")[1]
+        .split("<BR>");
 
+      let useCasesScope = false;
+      // TODO still need to trim the elements
+      let useCases = [];
+      let synonyms = [];
+      for (
+        let cursor = index + 2;
+        cursor < meaning_paragraph_per_line.length;
+        cursor++
+      ) {
+        const element = meaning_paragraph_per_line[cursor];
+        if (!useCasesScope && element.startsWith("<OL>")) {
+          useCasesScope = true;
+        } else if (!useCasesScope && element.startsWith("synoniemen:")) {
+          synonyms.push(getEveryMatch(element, synonym_regex));
+          break;
+        } else if (useCasesScope && element.startsWith("</OL>")) {
+          useCasesScope = false;
+          //   useCases = [];
+          // break;
+        } else if (useCasesScope) {
+          useCases.push(element);
+        }
+      }
+      meanings.push(CreateWordMeaning(definition, example, useCases, synonyms));
+    }
+  }
+  return {
+	  term,
+	  term_syntactic_role,
+	  definers,
+	  meanings
+  }
 }
 
 function getFirstMatch(str, regex_obj) {
@@ -57,7 +87,17 @@ function getFirstMatch(str, regex_obj) {
   if ((m = regex_obj.exec(str)) !== null) {
     // The result can be accessed through the `m`-variable.
     // the first group m[0] is the original string
-    console.log(`Found Header ${m[1]}`);
     return m[1];
   }
+}
+
+function getEveryMatch(str, regex_obj) {
+  let result = [];
+  let m;
+  while ((m = regex_obj.exec(str)) !== null) {
+    // The result can be accessed through the `m`-variable.
+    // the first group m[0] is the original string
+    result.push(m[1]);
+  }
+  return result;
 }
