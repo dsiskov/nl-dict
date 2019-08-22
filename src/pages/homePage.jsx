@@ -74,7 +74,7 @@ export default class HomePage extends Component {
     };
     let response = await axios.get(cors_workaround_url + url, params);
     let parsed = textHelpers.hex_to_ascii(response.data);
-	console.log(textHelpers.parseInnerHTML(parsed));
+	console.log(textHelpers.parseInnerHTML(response.data));
     this.setState({ translationContent: parsed });
   }
 
@@ -100,14 +100,16 @@ export default class HomePage extends Component {
         <Row>
           <Col
             xs={{ size: 1, offset: 1 }}
-            sm={{ size: 1, offset: 1 }}
+			sm={{ size: 1, offset: 1 }}
+			md={{size: 1, offset: 4}}
             lg={{ size: 1, offset: 5 }}
           >
             <img src={DictIcon} alt="App-Icon" height="200px" />
           </Col>
           <Col
-            xs={{ size: 1, offset: 1 }}
-            sm={{ size: 1, offset: 1 }}
+            xs={{ size: 1, offset: 4 }}
+			sm={{ size: 1, offset: 2 }}
+			md={{ size: 1, offset: 2 }}
             lg={{ size: 1, offset: 1 }}
           >
             <h1 style={{ lineHeight: "4em" }}>DictR</h1>
@@ -115,8 +117,9 @@ export default class HomePage extends Component {
         </Row>
         <Row form={true}>
           <Col
-            xs={{ size: 1, offset: 1 }}
-            sm={{ size: 1, offset: 1 }}
+            xs={{ size: 10, offset: 1 }}
+			sm={{ size: 10, offset: 1 }}
+			md={{size: 10, offset: 1}}
             lg={{ size: 6, offset: 3 }}
           >
             <InputWithOptions
@@ -145,8 +148,9 @@ export default class HomePage extends Component {
         </Row>
         <Row>
           <Col
-            xs={{ size: 1, offset: 1 }}
-            sm={{ size: 1, offset: 1 }}
+            xs={{ size: 10, offset: 1 }}
+			sm={{ size: 10, offset: 1 }}
+			md={{size: 10, offset: 1}}
             lg={{ size: 6, offset: 3 }}
           >
             <Card style={{ marginTop: "50px" }}>
